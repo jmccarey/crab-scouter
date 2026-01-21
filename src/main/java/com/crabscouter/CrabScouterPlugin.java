@@ -30,6 +30,7 @@ import net.runelite.client.util.WorldUtil;
 import net.runelite.http.api.worlds.World;
 import net.runelite.http.api.worlds.WorldResult;
 import net.runelite.client.game.WorldService;
+import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 
 @Slf4j
@@ -60,6 +61,9 @@ public class CrabScouterPlugin extends Plugin
 
 	@Inject
 	private OkHttpClient okHttpClient;
+
+	@Inject
+	private Gson gson;
 
 	@Getter
 	private final List<WorldData> worldDataList = new CopyOnWriteArrayList<>();
@@ -104,7 +108,7 @@ public class CrabScouterPlugin extends Plugin
 
 		clientToolbar.addNavigation(navButton);
 
-		webSocketClient = new CrabScouterWebSocketClient(this, SERVER_URL, okHttpClient);
+		webSocketClient = new CrabScouterWebSocketClient(this, SERVER_URL, okHttpClient, gson);
 		webSocketClient.connect();
 	}
 

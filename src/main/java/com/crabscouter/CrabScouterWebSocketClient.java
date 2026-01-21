@@ -31,12 +31,12 @@ public class CrabScouterWebSocketClient extends WebSocketListener
 	private boolean shouldReconnect = true;
 	private boolean isConnecting = false;
 
-	public CrabScouterWebSocketClient(CrabScouterPlugin plugin, String serverUrl, OkHttpClient httpClient)
+	public CrabScouterWebSocketClient(CrabScouterPlugin plugin, String serverUrl, OkHttpClient httpClient, Gson gson)
 	{
 		this.plugin = plugin;
 		this.serverUrl = serverUrl;
 		this.httpClient = httpClient;
-		this.gson = new Gson();
+		this.gson = gson;
 		this.executor = Executors.newSingleThreadScheduledExecutor();
 	}
 
