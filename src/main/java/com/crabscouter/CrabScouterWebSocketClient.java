@@ -148,7 +148,7 @@ public class CrabScouterWebSocketClient extends WebSocketListener
 		log.debug("Received message: {}", text);
 		try
 		{
-			JsonObject message = JsonParser.parseString(text).getAsJsonObject();
+			JsonObject message = new JsonParser().parse(text).getAsJsonObject();
 			String type = message.get("type").getAsString();
 
 			switch (type)
