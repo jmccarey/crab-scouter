@@ -29,6 +29,7 @@ import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.WorldUtil;
 import net.runelite.http.api.worlds.World;
 import net.runelite.http.api.worlds.WorldResult;
+import net.runelite.http.api.worlds.WorldType;
 import net.runelite.client.game.WorldService;
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
@@ -199,11 +200,35 @@ public class CrabScouterPlugin extends Plugin
 	private void onEnterCrabArea()
 	{
 		log.debug("Entered crab area in chunk {}", currentChunk);
+		if (isPvpWorld())
+		{
+			log.debug("Skipping join - PvP world");
+			return;
+		}
 		if (webSocketClient != null)
 		{
 			webSocketClient.sendJoin(client.getWorld(), currentChunk);
 		}
 		findCrab();
+	}
+
+	private boolean isPvpWorld()
+	{
+		WorldResult worldResult = worldService.getWorlds();
+		if (worldResult == null)
+		{
+			return false;
+		}
+
+		World world = worldResult.findWorld(client.getWorld());
+		if (world == null)
+		{
+			return false;
+		}
+
+		return world.getTypes().contains(WorldType.PVP)
+			|| world.getTypes().contains(WorldType.HIGH_RISK)
+			|| world.getTypes().contains(WorldType.DEADMAN);
 	}
 
 	private void onLeaveCrabArea()
@@ -293,7 +318,7 @@ public class CrabScouterPlugin extends Plugin
 
 	private void checkAndReport()
 	{
-		if (!isReporter || webSocketClient == null || currentChunk == -1)
+		if (!isReporter || webSocketClient == null || currentChunk == -1 || isPvpWorld())
 		{
 			return;
 		}
@@ -411,7 +436,7 @@ public class CrabScouterPlugin extends Plugin
 
 		clientThread.invokeLater(() ->
 		{
-			if (inCrabArea && client.getGameState() == GameState.LOGGED_IN)
+			if (inCrabArea && client.getGameState() == GameState.LOGGED_IN && !isPvpWorld())
 			{
 				log.debug("Reconnected while in crab area, resending join");
 				webSocketClient.sendJoin(client.getWorld(), currentChunk);
@@ -432,7 +457,7 @@ public class CrabScouterPlugin extends Plugin
 		isReporter = reporter;
 		log.debug("Role assigned: {}", reporter ? "reporter" : "listener");
 
-		if (isReporter && inCrabArea)
+		if (isReporter && inCrabArea && !isPvpWorld())
 		{
 			clientThread.invokeLater(() ->
 			{
