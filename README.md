@@ -2,6 +2,9 @@
 
 A RuneLite plugin that crowdsources Gemstone Crab data across worlds. Shows player counts, crab health, and location in real-time.
 
+<img width="293" height="236" alt="image" src="https://github.com/user-attachments/assets/dce527ed-6835-4c6b-9af5-f1b915602b0c" />
+
+
 ## How It Works
 
 1. When you enter a crab area the plugin connects to the scouting server
